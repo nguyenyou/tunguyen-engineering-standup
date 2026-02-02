@@ -35,7 +35,7 @@ TEMP_FILE=$(mktemp)
 for REPO in "${REPOS[@]}"; do
     echo "Fetching from $REPO..."
     gh api "repos/${REPO}/commits?author=${AUTHOR_EMAIL}&since=${SINCE_DATE}" --paginate 2>/dev/null | \
-    jq -r --arg repo "$REPO" '.[] | "\($repo)|\(.commit.author.date)|\(.commit.message | split("\n")[0])|\(.html_url)"' >> "$TEMP_FILE" || true
+    jq -r --arg repo "$REPO" '.[] | "\($repo)|\(.commit.message | split("\n")[0])"' >> "$TEMP_FILE" || true
 done
 
 # Generate markdown report
@@ -50,60 +50,41 @@ cat > "$OUTPUT_FILE" << EOF
 
 ## Summary
 
+| Repository | Commits |
+|------------|---------|
 EOF
 
 # Count commits per repo
 for REPO in "${REPOS[@]}"; do
     COUNT=$(grep "^${REPO}|" "$TEMP_FILE" | wc -l | tr -d ' ')
     REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
-    echo "| $REPO_NAME | $COUNT commits |" >> "$OUTPUT_FILE"
+    echo "| $REPO_NAME | $COUNT |" >> "$OUTPUT_FILE"
 done
 
-echo "" >> "$OUTPUT_FILE"
-echo "---" >> "$OUTPUT_FILE"
-echo "" >> "$OUTPUT_FILE"
+cat >> "$OUTPUT_FILE" << EOF
 
-# Group commits by repo
+---
+
+## Completed
+
+<!-- TODO: Write high-level summary of contributions -->
+
+---
+
+## Commits
+
+EOF
+
+# Group commits by repo under Commits section
 for REPO in "${REPOS[@]}"; do
     REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
     REPO_COMMITS=$(grep "^${REPO}|" "$TEMP_FILE" || true)
 
     if [ -n "$REPO_COMMITS" ]; then
-        echo "## $REPO_NAME" >> "$OUTPUT_FILE"
-        echo "" >> "$OUTPUT_FILE"
-
-        # Categorize commits
-        FEATS=$(echo "$REPO_COMMITS" | grep -i "|feat" || true)
-        if [ -n "$FEATS" ]; then
-            echo "### Features" >> "$OUTPUT_FILE"
-            echo "$FEATS" | while IFS='|' read -r _ date msg url; do
-                DAY=$(echo "$date" | cut -dT -f1)
-                echo "- **${msg}** - ${DAY}" >> "$OUTPUT_FILE"
-            done
-            echo "" >> "$OUTPUT_FILE"
-        fi
-
-        FIXES=$(echo "$REPO_COMMITS" | grep -i "|fix" || true)
-        if [ -n "$FIXES" ]; then
-            echo "### Bug Fixes" >> "$OUTPUT_FILE"
-            echo "$FIXES" | while IFS='|' read -r _ date msg url; do
-                DAY=$(echo "$date" | cut -dT -f1)
-                echo "- **${msg}** - ${DAY}" >> "$OUTPUT_FILE"
-            done
-            echo "" >> "$OUTPUT_FILE"
-        fi
-
-        OTHERS=$(echo "$REPO_COMMITS" | grep -iv "|feat" | grep -iv "|fix" || true)
-        if [ -n "$OTHERS" ]; then
-            echo "### Other" >> "$OUTPUT_FILE"
-            echo "$OTHERS" | while IFS='|' read -r _ date msg url; do
-                DAY=$(echo "$date" | cut -dT -f1)
-                echo "- **${msg}** - ${DAY}" >> "$OUTPUT_FILE"
-            done
-            echo "" >> "$OUTPUT_FILE"
-        fi
-
-        echo "---" >> "$OUTPUT_FILE"
+        echo "### $REPO_NAME" >> "$OUTPUT_FILE"
+        echo "$REPO_COMMITS" | while IFS='|' read -r _ msg; do
+            echo "- $msg" >> "$OUTPUT_FILE"
+        done
         echo "" >> "$OUTPUT_FILE"
     fi
 done

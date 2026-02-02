@@ -19,16 +19,9 @@ Generate weekly engineering contribution reports from GitHub repositories.
 
 ## Fill Existing Week Report
 
-Fill data into a pre-created week file:
-
 ```bash
 .claude/skills/standup-report/scripts/fill-week-report.sh 2026/week-06_jan-27-to-feb-02.md
 ```
-
-The script:
-1. Parses week dates from filename
-2. Fetches commits from GitHub for that date range
-3. Writes formatted report to the file
 
 ## Generate New Report (Current Week)
 
@@ -50,36 +43,41 @@ Author: detected from `git config user.email` or `GIT_AUTHOR_EMAIL` env var.
 # Weekly Standup Report
 
 **Author:** name (email)
-**Week:** 06 of 2026
-**Period:** 2026-01-27 to 2026-02-02
+**Week:** 05 of 2026
+**Period:** 2026-01-26 to 2026-02-01
 
 ---
 
 ## Summary
 
-| stargazer | N commits |
-| design | N commits |
+| Repository | Commits |
+|------------|---------|
+| stargazer  | 17      |
+| design     | 9       |
 
 ---
 
-## stargazer
+## Completed
 
-### Features
-- **feat(scope): message** - 2026-01-30
+- Implemented stale-while-revalidate data fetching pattern for better UX
+- Added code-reviewer agent for automated PR reviews
+- Fixed TabMinimalL component sizing issues across stargazer and design
+- Improved Claude Code skills: claude-md-improver, scala-coding-styles
 
-### Bug Fixes
-- **fix(scope): message** - 2026-01-29
+---
 
-### Other
-- **chore(scope): message** - 2026-01-28
+## Commits
+
+### stargazer
+- bump acl to latest
+- add code-reviewer agent and improve frontend patterns
+- stale-while-revalidate data fetching pattern
+- store semanticHTML from RichEditor for email sending
+
+### design
+- Add distinct to Screen breakpoint signals
+- use grow instead of flexGrow
+- TabMinimalL: avoid flex-basis: 0
 ```
 
-## Manual Workflow
-
-If scripts fail, fetch commits manually:
-
-```bash
-gh api "repos/anduintransaction/stargazer/commits?author=EMAIL&since=START&until=END" --paginate
-```
-
-Then format using the report structure above.
+The **Completed** section is a high-level summary of contributions (to be written manually or by Claude). The **Commits** section lists all raw commits.

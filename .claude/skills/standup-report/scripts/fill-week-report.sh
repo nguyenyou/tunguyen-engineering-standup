@@ -26,16 +26,15 @@ BASENAME=$(basename "$WEEK_FILE" .md)
 WEEK_NUM=$(echo "$BASENAME" | sed 's/week-\([0-9]*\)_.*/\1/')
 
 # Extract start/end from filename
-# Format: week-06_jan-27-to-feb-02
-START_PART=$(echo "$BASENAME" | sed 's/week-[0-9]*_\(.*\)-to-.*/\1/')  # jan-27
-END_PART=$(echo "$BASENAME" | sed 's/.*-to-\(.*\)/\1/')                 # feb-02
+START_PART=$(echo "$BASENAME" | sed 's/week-[0-9]*_\(.*\)-to-.*/\1/')
+END_PART=$(echo "$BASENAME" | sed 's/.*-to-\(.*\)/\1/')
 
 START_MONTH=$(echo "$START_PART" | cut -d'-' -f1)
 START_DAY=$(echo "$START_PART" | cut -d'-' -f2)
 END_MONTH=$(echo "$END_PART" | cut -d'-' -f1)
 END_DAY=$(echo "$END_PART" | cut -d'-' -f2)
 
-# Determine year from directory or filename
+# Determine year from directory
 YEAR=$(dirname "$WEEK_FILE" | grep -oE '[0-9]{4}' | tail -1)
 [ -z "$YEAR" ] && YEAR=$(date +%Y)
 
@@ -78,7 +77,7 @@ TEMP_FILE=$(mktemp)
 for REPO in "${REPOS[@]}"; do
     echo "Fetching from $REPO..."
     gh api "repos/${REPO}/commits?author=${AUTHOR_EMAIL}&since=${SINCE_DATE}&until=${UNTIL_DATE}" --paginate 2>/dev/null | \
-    jq -r --arg repo "$REPO" '.[] | "\($repo)|\(.commit.author.date)|\(.commit.message | split("\n")[0])|\(.html_url)"' >> "$TEMP_FILE" || true
+    jq -r --arg repo "$REPO" '.[] | "\($repo)|\(.commit.message | split("\n")[0])"' >> "$TEMP_FILE" || true
 done
 
 # Generate markdown report
@@ -93,59 +92,41 @@ cat > "$WEEK_FILE" << EOF
 
 ## Summary
 
+| Repository | Commits |
+|------------|---------|
 EOF
 
 # Count commits per repo
 for REPO in "${REPOS[@]}"; do
     COUNT=$(grep "^${REPO}|" "$TEMP_FILE" | wc -l | tr -d ' ')
     REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
-    echo "| $REPO_NAME | $COUNT commits |" >> "$WEEK_FILE"
+    echo "| $REPO_NAME | $COUNT |" >> "$WEEK_FILE"
 done
 
-echo "" >> "$WEEK_FILE"
-echo "---" >> "$WEEK_FILE"
-echo "" >> "$WEEK_FILE"
+cat >> "$WEEK_FILE" << EOF
 
-# Group commits by repo
+---
+
+## Completed
+
+<!-- TODO: Write high-level summary of contributions -->
+
+---
+
+## Commits
+
+EOF
+
+# Group commits by repo under Commits section
 for REPO in "${REPOS[@]}"; do
     REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
     REPO_COMMITS=$(grep "^${REPO}|" "$TEMP_FILE" || true)
 
     if [ -n "$REPO_COMMITS" ]; then
-        echo "## $REPO_NAME" >> "$WEEK_FILE"
-        echo "" >> "$WEEK_FILE"
-
-        FEATS=$(echo "$REPO_COMMITS" | grep -i "|feat" || true)
-        if [ -n "$FEATS" ]; then
-            echo "### Features" >> "$WEEK_FILE"
-            echo "$FEATS" | while IFS='|' read -r _ date msg url; do
-                DAY=$(echo "$date" | cut -dT -f1)
-                echo "- **${msg}** - ${DAY}" >> "$WEEK_FILE"
-            done
-            echo "" >> "$WEEK_FILE"
-        fi
-
-        FIXES=$(echo "$REPO_COMMITS" | grep -i "|fix" || true)
-        if [ -n "$FIXES" ]; then
-            echo "### Bug Fixes" >> "$WEEK_FILE"
-            echo "$FIXES" | while IFS='|' read -r _ date msg url; do
-                DAY=$(echo "$date" | cut -dT -f1)
-                echo "- **${msg}** - ${DAY}" >> "$WEEK_FILE"
-            done
-            echo "" >> "$WEEK_FILE"
-        fi
-
-        OTHERS=$(echo "$REPO_COMMITS" | grep -iv "|feat" | grep -iv "|fix" || true)
-        if [ -n "$OTHERS" ]; then
-            echo "### Other" >> "$WEEK_FILE"
-            echo "$OTHERS" | while IFS='|' read -r _ date msg url; do
-                DAY=$(echo "$date" | cut -dT -f1)
-                echo "- **${msg}** - ${DAY}" >> "$WEEK_FILE"
-            done
-            echo "" >> "$WEEK_FILE"
-        fi
-
-        echo "---" >> "$WEEK_FILE"
+        echo "### $REPO_NAME" >> "$WEEK_FILE"
+        echo "$REPO_COMMITS" | while IFS='|' read -r _ msg; do
+            echo "- $msg" >> "$WEEK_FILE"
+        done
         echo "" >> "$WEEK_FILE"
     fi
 done

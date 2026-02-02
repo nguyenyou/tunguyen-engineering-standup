@@ -8,54 +8,48 @@
 
 ## Summary
 
-| stargazer | 17 commits |
-| design | 9 commits |
+| Repository | Commits |
+|------------|---------|
+| stargazer | 17 |
+| design | 9 |
 
 ---
 
-## stargazer
+## Completed
 
-### Features
-- **feat(claude): add code-reviewer agent and improve frontend patterns (#51124)** - 2026-01-31
-- **feat(email): store semanticHTML from RichEditor for email sending (#51030)** - 2026-01-30
-
-### Bug Fixes
-- **fix(cc): update figma-to-scalajs skill Tailwind DSL syntax (#51093)** - 2026-01-29
-- **fix(portal): sub-navigation tab always showing first tab as active (#51084)** - 2026-01-29
-- **fix(TabMinimalL): flexFill causing initial size is 0 due to flex-basis:0 (#51072)** - 2026-01-29
-- **fix(fundsub): safer way for manage laminar cell node in tabulator (#51049)** - 2026-01-28
-- **fix(tailwind4): revert the hover behavior to tailwind v3 (#51022)** - 2026-01-26
-- **fix(fundsub): broken layout (#51007)** - 2026-01-26
-
-### Other
-- **chore(build): bump acl to latest (#51127)** - 2026-02-01
-- **platform(web): stale-while-revalidate data fetching pattern (#51119)** - 2026-01-30
-- **refactor(lp-profile): query data (#51064)** - 2026-01-28
-- **agent(skills): claude-md-improver (#51024)** - 2026-01-27
-- **agent(skills): scala-coding-styles (#51020)** - 2026-01-26
-- **refactor(lp-profile): clean up code (#51017)** - 2026-01-26
-- **agent(skills): Improve laminar-best-practices (#51011)** - 2026-01-26
-- **agent(skills): improve laminar-best-practices (#51008)** - 2026-01-26
-- **web(devtools): chose IDE for jumping source feature (#51006)** - 2026-01-26
+<!-- TODO: Write high-level summary of contributions -->
 
 ---
 
-## design
+## Commits
 
-### Features
-- **feat(tailwind): use grow instead of flexGrow** - 2026-01-29
+### stargazer
+- chore(build): bump acl to latest (#51127)
+- feat(claude): add code-reviewer agent and improve frontend patterns (#51124)
+- platform(web): stale-while-revalidate data fetching pattern (#51119)
+- feat(email): store semanticHTML from RichEditor for email sending (#51030)
+- fix(cc): update figma-to-scalajs skill Tailwind DSL syntax (#51093)
+- fix(portal): sub-navigation tab always showing first tab as active (#51084)
+- fix(TabMinimalL): flexFill causing initial size is 0 due to flex-basis:0 (#51072)
+- refactor(lp-profile): query data (#51064)
+- fix(fundsub): safer way for manage laminar cell node in tabulator (#51049)
+- agent(skills): claude-md-improver (#51024)
+- fix(tailwind4): revert the hover behavior to tailwind v3 (#51022)
+- agent(skills): scala-coding-styles (#51020)
+- refactor(lp-profile): clean up code (#51017)
+- agent(skills): Improve laminar-best-practices (#51011)
+- agent(skills): improve laminar-best-practices (#51008)
+- fix(fundsub): broken layout (#51007)
+- web(devtools): chose IDE for jumping source feature (#51006)
 
-### Bug Fixes
-- **fix: Add distinct to Screen breakpoint signals** - 2026-01-31
-- **fix(TabMinimalL): avoid flex-basis: 0** - 2026-01-29
-- **fix(TabMinimalL): width: 100% for tab content** - 2026-01-29
-- **fix(tailwind): revert the hover behavior to tailwind v3** - 2026-01-26
-
-### Other
-- **mill: 1.1.0** - 2026-01-30
-- **docs: update url for leak and no leak TableL examples** - 2026-01-26
-- **[Safari] fix(TabMinimalL): this fix will allow tab content using height:100% and still work** - 2026-01-26
-- **web(devtools): chose IDE for jumping source feature** - 2026-01-26
-
----
+### design
+- fix: Add distinct to Screen breakpoint signals
+- mill: 1.1.0
+- feat(tailwind): use grow instead of flexGrow
+- fix(TabMinimalL): avoid flex-basis: 0
+- fix(TabMinimalL): width: 100% for tab content
+- docs: update url for leak and no leak TableL examples
+- fix(tailwind): revert the hover behavior to tailwind v3
+- [Safari] fix(TabMinimalL): this fix will allow tab content using height:100% and still work
+- web(devtools): chose IDE for jumping source feature
 
