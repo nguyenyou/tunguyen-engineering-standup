@@ -17,7 +17,12 @@
 
 ## Completed
 
-<!-- TODO: Write high-level summary of contributions -->
+- Added Claude Code skills: code-reviewer agent, claude-md-improver, scala-coding-styles
+- Implemented stale-while-revalidate data fetching pattern
+- Fixed TabMinimalL sizing issues (flex-basis, Safari compatibility)
+- Fixed portal sub-navigation and fundsub layout bugs
+- Reverted Tailwind v4 hover behavior to v3
+- Added IDE selection for devtools source jumping
 
 ---
 
